@@ -10,6 +10,7 @@ const jobSchema = new mongoose.Schema(
         45,
         "A job title must have a maximum of 45 characters. Consider adding more info in the description",
       ],
+      unique: true,
     },
     description: {
       type: String,

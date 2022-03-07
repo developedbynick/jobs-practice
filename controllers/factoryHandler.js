@@ -17,17 +17,21 @@ exports.getAll = (Model) =>
     res.json({ status: "success", results: docs.length, data: docs });
   });
 
-//   prettier-ignore
 // eslint-disable-next-line consistent-return
-exports.createOne = (Model) => asyncHandler(async (req, res, next) => {
-  if (Array.isArray(req.body)) {
-    return next(new APIError("Expected typeof object, not typeof array", 400));
-  }
-  const doc = await Model.create(req.body);
-  // eslint-disable-next-line no-underscore-dangle
-  doc.__v = undefined;
-  res.status(201).json({ status: "success", data: doc });
-});
+exports.createOne = (Model) =>
+  asyncHandler(async (req, res, next) => {
+    if (Array.isArray(req.body)) {
+      return next(
+        new APIError("Expected typeof object, not typeof array", 400)
+      );
+    }
+
+    const doc = await Model.create(req.body);
+    // eslint-disable-next-line no-underscore-dangle
+    doc.__v = undefined;
+    doc.active = undefined;
+    res.status(201).json({ status: "success", data: doc });
+  });
 
 exports.deleteOne = (Model) =>
   asyncHandler(async (req, res, next) => {

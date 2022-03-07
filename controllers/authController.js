@@ -16,12 +16,14 @@ const emailVerificationTemplate = fs.readFileSync(
 );
 const sendEmail = async (user, otp, res) => {
   const emailTemplate = emailVerificationTemplate
-    .replace("{%EMAIL%}", user.email)
+    .replace("{%NAME%}", user.name)
     .replace("{%CODE%}", otp);
   await sendMail({
     subject: "Email Verification(Valid for 10 minutes)",
     html: emailTemplate,
     to: user.email,
+    from: process.env.MAIL_USER,
+    text: "Email Verification(Valid for 10 minutes)",
   });
   user.emailVerificationToken = undefined;
   res.status(201).json({ user });
@@ -80,7 +82,7 @@ exports.verifyEmail = asyncHandler(async (req, res, next) => {
   user.emailVerificationToken = undefined;
   user.emailVerificationCodeCanBeSentAt = undefined;
   await user.save({ validateBeforeSave: false });
-  res.sendStatus(200);
+  res.json({ user });
 });
 
 exports.resendEmailVerificationCode = asyncHandler(async (req, res, next) => {
